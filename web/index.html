@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bearabull — NIFTY 50 Weekly Stock Prediction & Analysis Platform</title>
+  <meta name="description" content="Technical-analysis and weekly decision-support platform for NIFTY 50 constituents. Read the trend, understand the risk.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/styles.css">
+  <!-- Lightweight Charts by TradingView -->
+  <script src="https://unpkg.com/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+<body class="dark-theme">
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <svg class="brand-logo" viewBox="0 0 40 40" width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="40" height="40" rx="10" fill="#151b26" stroke="#232d3f" stroke-width="1.5"/>
+            <!-- Bull Horn (Emerald) -->
+            <path d="M10 26C10 20 13 13 20 10C18 15 17 19 19 23" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 28L18 22" stroke="#10b981" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Bear Claw / Brow (Coral) -->
+            <path d="M30 14C30 20 27 27 20 30C22 25 23 21 21 17" stroke="#ef4444" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M28 12L22 18" stroke="#ef4444" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- Center Pivot Core -->
+            <circle cx="20" cy="20" r="2.5" fill="#f8fafc"/>
+          </svg>
+          <div class="brand-text">
+            <span class="brand-name">BEARA<span class="bull-highlight">BULL</span></span>
+            <span class="brand-tagline">NIFTY 50 Terminal</span>
+          </div>
+        </div>
+        <button class="mobile-close-btn" id="mobileCloseBtn" aria-label="Close Sidebar">&times;</button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="dashboard">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="autotrader">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/><circle cx="12" cy="12" r="4"/></svg>
+          <span>Auto-Trader</span>
+          <span class="badge" id="autotraderNavBadge" style="background:rgba(56, 189, 248, 0.2); color:#38bdf8; border:1px solid rgba(56, 189, 248, 0.3);">15m</span>
+        </button>
+        <button class="nav-item" data-tab="screener">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+          <span>Stock Screener</span>
+        </button>
+        <button class="nav-item" data-tab="signals">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          <span>Weekly Signals</span>
+        </button>
+        <button class="nav-item" data-tab="explorer">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <span>Stock Explorer</span>
+        </button>
+        <button class="nav-item" data-tab="watchlist">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+          <span>Watchlist</span>
+          <span class="badge" id="watchlistBadge">0</span>
+        </button>
+        <button class="nav-item" data-tab="backtest">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"/></svg>
+          <span>Backtesting</span>
+        </button>
+        <button class="nav-item" data-tab="methodology">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Methodology</span>
+        </button>
+        <button class="nav-item" data-tab="settings">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="system-status-card">
+          <div class="status-indicator">
+            <span class="status-dot live" id="liveDot"></span>
+            <span class="status-label" id="liveStatusText">NSE Live</span>
+          </div>
+          <div class="status-meta" id="lastSyncMeta">Synced: Just now</div>
+          <div id="demoBadge" class="demo-badge hidden">DEMO MODE</div>
+        </div>
+        <button class="btn-sync" id="btnSync">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span>Refresh Data</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-wrapper">
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle Navigation">
+            <svg viewBox="0 0 24 24" width="22" height="22" stroke="currentColor" stroke-width="2" fill="none"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+          </button>
+          <div class="market-pill">
+            <span class="pill-title">NIFTY 50</span>
+            <span class="pill-value" id="topbarNiftyChange">+0.00%</span>
+          </div>
+          <div class="market-pill">
+            <span class="pill-title">BREADTH</span>
+            <span class="pill-value" id="topbarBreadth">0% > SMA50</span>
+          </div>
+        </div>
+
+        <div class="topbar-center">
+          <div class="search-box">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="globalSearchInput" placeholder="Search 50 stocks (e.g. RELIANCE, TCS)..." autocomplete="off">
+            <div class="search-results-dropdown" id="searchResultsDropdown"></div>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <div class="freshness-tag" id="freshnessTag">
+            <span class="tag-icon">⚡</span>
+            <span id="freshnessText">Weekly Cycle Active</span>
+          </div>
+          <button class="btn-icon" id="btnThemeToggle" title="Toggle Terminal Mode">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTENT PANELS -->
+      <main class="content-body">
+        <!-- 1. DASHBOARD TAB -->
+        <section class="tab-panel active" id="tab-dashboard">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Market Pulse & Opportunity Matrix</h1>
+              <p class="view-subtitle">Weekly technical synthesis and momentum posture across the NIFTY 50 universe</p>
+            </div>
+            <div class="header-actions">
+              <span class="as-of-badge" id="dashboardAsOf">Data As of: --</span>
+            </div>
+          </div>
+
+          <!-- STATS CARDS GRID -->
+          <div class="stats-grid">
+            <div class="stat-card bull-card">
+              <div class="stat-header">
+                <span class="stat-title">Bullish Setups (BUY)</span>
+                <span class="stat-badge bull">BULL</span>
+              </div>
+              <div class="stat-value bull-text" id="statBullCount">0</div>
+              <div class="stat-desc">Stocks with score >= 70 & confirmed trend</div>
+            </div>
+
+            <div class="stat-card bear-card">
+              <div class="stat-header">
+                <span class="stat-title">Bearish Biases (SELL)</span>
+                <span class="stat-badge bear">BEAR</span>
+              </div>
+              <div class="stat-value bear-text" id="statBearCount">0</div>
+              <div class="stat-desc">Stocks with negative momentum & breakdown</div>
+            </div>
+
+            <div class="stat-card neutral-card">
+              <div class="stat-header">
+                <span class="stat-title">Consolidating (HOLD)</span>
+                <span class="stat-badge neutral">NEUTRAL</span>
+              </div>
+              <div class="stat-value neutral-text" id="statNeutralCount">0</div>
+              <div class="stat-desc">In sideways range or waiting for confirmation</div>
+            </div>
+
+            <div class="stat-card breadth-card">
+              <div class="stat-header">
+                <span class="stat-title">Market Breadth</span>
+                <span class="stat-badge info">SMA 50 / 200</span>
+              </div>
+              <div class="stat-value info-text" id="statBreadth50">0%</div>
+              <div class="breadth-bars">
+                <div class="bar-label"><span>Above 50 SMA:</span> <strong id="lblBreadth50">0%</strong></div>
+                <div class="progress-track"><div class="progress-fill bull" id="barBreadth50" style="width: 0%"></div></div>
+                <div class="bar-label"><span>Above 200 SMA:</span> <strong id="lblBreadth200">0%</strong></div>
+                <div class="progress-track"><div class="progress-fill info" id="barBreadth200" style="width: 0%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOP MOVERS ROW -->
+          <div class="movers-row">
+            <div class="dashboard-card flex-1">
+              <div class="card-header">
+                <h3>🚀 Top Weekly Gainers</h3>
+                <span class="card-subtitle">Highest momentum movers</span>
+              </div>
+              <div class="mini-table" id="topGainersList"></div>
+            </div>
+            <div class="dashboard-card flex-1">
+              <div class="card-header">
+                <h3>📉 Top Weekly Laggards</h3>
+                <span class="card-subtitle">Steepest pullbacks & breakdowns</span>
+              </div>
+              <div class="mini-table" id="topLosersList"></div>
+            </div>
+          </div>
+
+          <!-- OPPORTUNITY TABLE -->
+          <div class="dashboard-card">
+            <div class="card-header space-between">
+              <div>
+                <h3>Weekly Opportunity Ranking</h3>
+                <span class="card-subtitle">NIFTY 50 constituents ordered by technical conviction score</span>
+              </div>
+              <div class="table-tools">
+                <input type="text" class="input-filter" id="dashFilterInput" placeholder="Quick filter by ticker or sector...">
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="opportunityTable">
+                <thead>
+                  <tr>
+                    <th>Symbol & Company</th>
+                    <th>Sector</th>
+                    <th class="num">Last Close</th>
+                    <th class="num">Weekly %</th>
+                    <th>Signal</th>
+                    <th class="num">Score</th>
+                    <th class="num">RSI (14)</th>
+                    <th>Trend</th>
+                    <th class="num">RVOL</th>
+                    <th>Risk</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="opportunityTableBody">
+                  <tr><td colspan="11" class="loading-state">Loading real market data...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- AUTO-TRADER TAB -->
+        <section class="tab-panel" id="tab-autotrader">
+          <div class="view-header">
+            <div>
+              <div style="display:flex; align-items:center; gap:10px; margin-bottom:4px; flex-wrap:wrap;">
+                <h1 class="view-title">Autonomous 15-Minute Paper Trader</h1>
+                <span class="badge badge-paper">Virtual Simulation Only</span>
+              </div>
+              <p class="view-subtitle">NSE NIFTY 50 15-minute polling, Smart Money order block ranking, deterministic risk sizing & execution reconciliation</p>
+            </div>
+            <div class="header-actions" style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+              <span class="badge badge-disabled" id="atStatusBadge"><span class="pulse-dot"></span>DISABLED</span>
+              <span class="badge" id="atSessionBadge" style="background:var(--bg-card); border:1px solid var(--border-subtle);">Session: --</span>
+              <button class="btn-primary" id="btnAtToggle">Enable Auto-Trading</button>
+              <button class="btn-secondary" id="btnAtPause">Pause Entries</button>
+              <button class="btn-secondary" id="btnAtScan">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                <span>Scan (15m)</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- TOP METRICS GRID -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Virtual Account Equity</span>
+                <span class="stat-badge" style="background:rgba(59,130,246,0.15); color:#60a5fa;">INR ₹</span>
+              </div>
+              <div class="stat-value" id="atTotalEquity">₹10,00,000</div>
+              <div class="stat-sub">
+                <span>Available Cash: <strong id="atCurrentCash" style="color:var(--text-main);">₹10,00,000</strong></span>
+                <span id="atDayPnL" style="color:var(--text-muted);">Day: 0.0%</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Weekly Target (1–10%)</span>
+                <span class="stat-badge" id="atTargetStatusBadge">TARGET</span>
+              </div>
+              <div class="stat-value" id="atWeeklyReturn">0.0%</div>
+              <div class="target-progress-wrapper">
+                <div class="target-progress-bar-bg">
+                  <div class="target-progress-fill" id="atTargetProgressFill" style="width: 0%;"></div>
+                </div>
+                <div class="target-markers">
+                  <span>0%</span>
+                  <span style="color:#10b981;">Min 1%</span>
+                  <span style="color:#60a5fa;">Max 10%</span>
+                </div>
+              </div>
+              <div class="stat-sub" style="margin-top:6px;">
+                <span id="atRemainingSessions">Remaining: 5 sessions</span>
+                <span id="atWeeklyRealized">Realized: ₹0</span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">Risk & Circuit Breakers</span>
+                <span class="stat-badge" style="background:rgba(239,68,68,0.15); color:#f87171;">RISK</span>
+              </div>
+              <div class="stat-value" id="atRiskExposed">₹0</div>
+              <div class="stat-sub">
+                <span>Planned Risk: <strong id="atAggregateRiskPct">0.0% / 2.0%</strong></span>
+                <span>Peak Drawdown: <strong id="atDrawdownPct" style="color:var(--bear-primary);">0.0% / 3.0%</strong></span>
+              </div>
+              <div class="stat-sub" style="margin-top:4px;">
+                <span>Daily Loss Allowance: <strong id="atRemainingDailyRisk" style="color:var(--bull-primary);">1.5%</strong></span>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-header">
+                <span class="stat-title">15m Polling & Scheduler</span>
+                <span class="stat-badge" id="atProviderBadge">DATA</span>
+              </div>
+              <div class="stat-value" style="font-size:18px;" id="atLastScanTime">--:--:--</div>
+              <div class="stat-sub">
+                <span>Next Scan: <strong id="atNextScanTime" style="color:var(--info-primary);">--:--:--</strong></span>
+                <span>Positions: <strong id="atOpenPositionsCount">0 / 5</strong></span>
+              </div>
+              <div class="stat-sub" style="margin-top:4px;">
+                <span id="atFreshnessStatus" style="color:var(--bull-primary);">Quote Freshness: Verified</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOP 5 QUALIFIED OPPORTUNITIES (SECTION 3) -->
+          <div class="dashboard-card" style="margin-top: 20px;">
+            <div class="card-header">
+              <div>
+                <h3>Top Qualified Opportunities (Scored 0–100)</h3>
+                <span class="card-subtitle">Ranked by Smart Money Concepts order blocks, multi-timeframe alignment, and risk/reward</span>
+              </div>
+              <span class="badge" style="background:rgba(16,185,129,0.15); color:#10b981;">Strict Filters: Zero Forced Trades</span>
+            </div>
+            <div class="opportunity-grid" id="atOpportunitiesGrid">
+              <div class="loading-state">Evaluating NIFTY 50 candidates...</div>
+            </div>
+          </div>
+
+          <!-- ACTIVE PAPER POSITIONS TABLE (SECTION 4 & 5) -->
+          <div class="dashboard-card" style="margin-top: 20px;">
+            <div class="card-header">
+              <div>
+                <h3>Active Paper Positions</h3>
+                <span class="card-subtitle">Deterministic simulated fills with slippage and transaction costs</span>
+              </div>
+              <span class="badge" id="atOpenPositionsBadge">0 Active</span>
+            </div>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Symbol</th>
+                    <th>Side</th>
+                    <th>Shares</th>
+                    <th>Simulated Entry</th>
+                    <th>Observed Price</th>
+                    <th>Unrealized P&L</th>
+                    <th>Stop Loss</th>
+                    <th>Target</th>
+                    <th>MFE</th>
+                    <th>MAE</th>
+                  </tr>
+                </thead>
+                <tbody id="atPositionsTableBody">
+                  <tr><td colspan="10" class="empty-state">No open paper positions. Cash is preserved.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- MARKET PRICE RECONCILIATION & EXECUTION QUALITY (SECTION 8) -->
+          <div class="dashboard-card" style="margin-top: 20px;">
+            <div class="card-header">
+              <div>
+                <h3>Trade Execution Quality & Market Price Reconciliation</h3>
+                <span class="card-subtitle">Audit ledger comparing simulated paper fills vs. actual observed market prices</span>
+              </div>
+              <span class="badge" style="background:rgba(56,189,248,0.15); color:#38bdf8;">Auditable Ledger</span>
+            </div>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Symbol</th>
+                    <th>Decision Time</th>
+                    <th>Simulated Fill</th>
+                    <th>Observed Market Price</th>
+                    <th>Entry Dev (bps)</th>
+                    <th>Exit Price</th>
+                    <th>Exit Dev (bps)</th>
+                    <th>Slippage Cost</th>
+                    <th>Net P&L</th>
+                    <th>Holding</th>
+                  </tr>
+                </thead>
+                <tbody id="atReconciliationTableBody">
+                  <tr><td colspan="10" class="empty-state">No execution comparison records logged yet.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- STRATEGY INSIGHTS & SAFE OPTIMIZATION (SECTION 9) -->
+          <div class="row-2col" style="margin-top: 20px;">
+            <div class="dashboard-card">
+              <div class="card-header">
+                <div>
+                  <h3>Evidence-Based Strategy Findings</h3>
+                  <span class="card-subtitle">Empirical insights generated from completed paper trades</span>
+                </div>
+              </div>
+              <div class="findings-list" id="atFindingsList">
+                <div class="finding-item">Awaiting sufficient trade sample size to formulate statistical conclusions.</div>
+              </div>
+            </div>
+
+            <div class="dashboard-card">
+              <div class="card-header">
+                <div>
+                  <h3>Safe Strategy Optimization & Approval</h3>
+                  <span class="card-subtitle">Walk-forward validated candidate models requiring explicit operator approval</span>
+                </div>
+              </div>
+              <div id="atExperimentsContainer" style="padding:16px;">
+                <div class="empty-state">Active baseline: <strong id="atActiveVersionTag">v1.0.0</strong>. Propose and test optimizations with walk-forward validation.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RECENT SCAN CYCLES AUDIT -->
+          <div class="dashboard-card" style="margin-top: 20px;">
+            <div class="card-header">
+              <div>
+                <h3>Autonomous 15-Minute Scan Cycle Audit Log</h3>
+                <span class="card-subtitle">Coordinated job execution history and provider health</span>
+              </div>
+            </div>
+            <div class="table-container">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Cycle #</th>
+                    <th>Session Date</th>
+                    <th>Started At</th>
+                    <th>Status</th>
+                    <th>Stocks Scanned</th>
+                    <th>Top Candidates</th>
+                    <th>Orders (Sub/Fill)</th>
+                    <th>Health</th>
+                    <th>Summary</th>
+                  </tr>
+                </thead>
+                <tbody id="atCyclesTableBody">
+                  <tr><td colspan="9" class="empty-state">No cycles executed yet.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. STOCK SCREENER TAB -->
+        <section class="tab-panel" id="tab-screener">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">NIFTY 50 Stock Screener</h1>
+              <p class="view-subtitle">High-conviction technical scanner with multi-factor presets</p>
+            </div>
+          </div>
+
+          <!-- PRESET CHIPS -->
+          <div class="preset-chips">
+            <button class="chip active" data-preset="">All Stocks</button>
+            <button class="chip" data-preset="top_bullish">🟢 Top Bullish Setups</button>
+            <button class="chip" data-preset="top_bearish">🔴 Top Bearish Setups</button>
+            <button class="chip" data-preset="strong_momentum">⚡ Strong Momentum</button>
+            <button class="chip" data-preset="breakouts">🚀 Breakout Candidates</button>
+            <button class="chip" data-preset="pullbacks">🔄 Pullback Candidates</button>
+            <button class="chip" data-preset="high_volume">📊 High-Volume Movers</button>
+            <button class="chip" data-preset="low_volatility">🛡️ Low Volatility</button>
+          </div>
+
+          <!-- FILTER CONTROLS BAR -->
+          <div class="filter-bar">
+            <div class="filter-group">
+              <label>Signal</label>
+              <select id="screenerSignalFilter">
+                <option value="ALL">All Signals</option>
+                <option value="BUY">BUY Only</option>
+                <option value="SELL">SELL Only</option>
+                <option value="HOLD">HOLD Only</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Sector</label>
+              <select id="screenerSectorFilter">
+                <option value="ALL">All Sectors</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Min Score: <span id="valMinScore">0</span></label>
+              <input type="range" id="screenerMinScore" min="0" max="95" step="5" value="0">
+            </div>
+            <div class="filter-group">
+              <label>Risk Class</label>
+              <select id="screenerRiskFilter">
+                <option value="ALL">All Risk Levels</option>
+                <option value="Low">Low Volatility</option>
+                <option value="Normal">Normal</option>
+                <option value="High">High Volatility</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label>Sort By</label>
+              <select id="screenerSortBy">
+                <option value="score">Signal Score</option>
+                <option value="weekly_change">Weekly Change %</option>
+                <option value="rsi">RSI (14)</option>
+                <option value="rvol">Relative Volume</option>
+                <option value="price">Share Price</option>
+                <option value="symbol">Ticker</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="screener-count-bar">
+            <span>Showing <strong id="screenerCount">0</strong> stocks matching criteria</span>
+          </div>
+
+          <div class="table-container">
+            <table class="data-table" id="screenerTable">
+              <thead>
+                <tr>
+                  <th>Symbol & Company</th>
+                  <th>Sector</th>
+                  <th class="num">Last Price</th>
+                  <th class="num">Weekly Change</th>
+                  <th>Signal</th>
+                  <th class="num">Strength Score</th>
+                  <th class="num">RSI</th>
+                  <th class="num">RVOL</th>
+                  <th class="num">Support (₹)</th>
+                  <th class="num">Resistance (₹)</th>
+                  <th>Risk Level</th>
+                  <th>Rationale</th>
+                </tr>
+              </thead>
+              <tbody id="screenerTableBody">
+                <tr><td colspan="12" class="loading-state">Loading screener results...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- 3. WEEKLY SIGNALS TAB -->
+        <section class="tab-panel" id="tab-signals">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Explainable Weekly Technical Signals</h1>
+              <p class="view-subtitle">Detailed factor score breakdowns, trade levels, and transparent evidence</p>
+            </div>
+          </div>
+
+          <div id="signalsCardsGrid" class="signals-cards-grid">
+            <div class="loading-state">Loading weekly signal dossiers...</div>
+          </div>
+        </section>
+
+        <!-- 4. STOCK EXPLORER TAB -->
+        <section class="tab-panel" id="tab-explorer">
+          <div class="explorer-topbar">
+            <div class="stock-select-row">
+              <div class="select-container">
+                <label>Active Stock:</label>
+                <select id="explorerStockSelect" class="stock-dropdown"></select>
+              </div>
+              <div class="timeframe-selector">
+                <button class="tf-btn" data-limit="30">1M</button>
+                <button class="tf-btn" data-limit="90">3M</button>
+                <button class="tf-btn" data-limit="180">6M</button>
+                <button class="tf-btn active" data-limit="365">1Y</button>
+                <button class="tf-btn" data-limit="600">2Y</button>
+              </div>
+              <button class="btn-watchlist-toggle" id="btnToggleWatchlist">
+                <span id="watchlistBtnIcon">⭐</span> <span id="watchlistBtnText">Add to Watchlist</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- STOCK HEADER HERO -->
+          <div class="stock-hero-card" id="stockHeroCard">
+            <div class="hero-main">
+              <div class="hero-title-group">
+                <h2 id="heroCompanyName">Reliance Industries Ltd</h2>
+                <div class="hero-tags">
+                  <span class="ticker-badge" id="heroTicker">RELIANCE</span>
+                  <span class="sector-badge" id="heroSector">Oil & Gas</span>
+                  <span class="exchange-badge">NSE:EQ</span>
+                </div>
+              </div>
+              <div class="hero-price-group">
+                <div class="hero-price" id="heroPrice">₹0.00</div>
+                <div class="hero-change" id="heroWeeklyChange">+0.00% (Weekly)</div>
+              </div>
+            </div>
+
+            <div class="hero-signal-strip">
+              <div class="signal-tag-large" id="heroSignalBadge">HOLD</div>
+              <div class="score-pill">
+                <span class="score-num" id="heroScore">0</span>
+                <span class="score-max">/100</span>
+              </div>
+              <div class="hero-levels">
+                <div><span>Entry Zone:</span> <strong id="heroEntryZone">₹0 - ₹0</strong></div>
+                <div><span>Invalidation / Stop:</span> <strong id="heroStopLoss">₹0</strong></div>
+                <div><span>Target / R:R:</span> <strong id="heroRR">0.0x</strong></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- INTERACTIVE CHARTS CONTAINER -->
+          <div class="chart-wrapper dashboard-card">
+            <div class="chart-header">
+              <div class="chart-legend">
+                <span class="legend-item"><span class="color-dot" style="background:#3b82f6"></span> SMA 20</span>
+                <span class="legend-item"><span class="color-dot" style="background:#f59e0b"></span> SMA 50</span>
+                <span class="legend-item"><span class="color-dot" style="background:#8b5cf6"></span> EMA 21</span>
+                <span class="legend-item"><span class="color-dot" style="background:#06b6d4"></span> Bollinger Bands</span>
+              </div>
+              <div class="chart-timeframe-tag" id="chartTimeframeLabel">Daily Candles</div>
+            </div>
+            <!-- Primary Candlestick & Volume Chart -->
+            <div id="tradingviewChart" class="tradingview-chart-box"></div>
+            <!-- Subchart: RSI -->
+            <div class="subchart-container">
+              <div class="subchart-header">
+                <span>RSI (14)</span>
+                <span class="subchart-val" id="chartRSIVal">--</span>
+              </div>
+              <div id="rsiChart" class="subchart-box"></div>
+            </div>
+            <!-- Subchart: MACD -->
+            <div class="subchart-container">
+              <div class="subchart-header">
+                <span>MACD (12, 26, 9)</span>
+                <span class="subchart-val" id="chartMACDVal">--</span>
+              </div>
+              <div id="macdChart" class="subchart-box"></div>
+            </div>
+          </div>
+
+          <!-- TECHNICAL INDICATORS GRID -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Technical Indicator Dashboard</h3>
+              <span class="card-subtitle">Precise quantitative metrics calculated across historical session candles</span>
+            </div>
+            <div class="indicator-matrix" id="indicatorMatrix">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- EVIDENCE & RATIONALE SECTION -->
+          <div class="evidence-grid">
+            <div class="dashboard-card">
+              <div class="card-header">
+                <h3 class="bull-text">🟢 Bullish Evidence & Strengths</h3>
+              </div>
+              <ul class="evidence-list" id="heroBullEvidence"></ul>
+            </div>
+            <div class="dashboard-card">
+              <div class="card-header">
+                <h3 class="bear-text">🔴 Bearish Risks & Weaknesses</h3>
+              </div>
+              <ul class="evidence-list" id="heroBearEvidence"></ul>
+            </div>
+          </div>
+
+          <div class="dashboard-card rationale-card">
+            <div class="card-header">
+              <h3>Plain-Language Strategy Rationale</h3>
+            </div>
+            <p id="heroRationale" class="rationale-text"></p>
+          </div>
+        </section>
+
+        <!-- 5. WATCHLIST TAB -->
+        <section class="tab-panel" id="tab-watchlist">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Personal Stock Watchlist</h1>
+              <p class="view-subtitle">Curated monitoring list with live signals and price alerts</p>
+            </div>
+            <div class="watchlist-add-bar">
+              <input type="text" id="watchlistAddInput" placeholder="Add symbol (e.g. INFY, HDFCBANK)...">
+              <button class="btn-primary" id="btnAddToWatchlist">Add Stock</button>
+            </div>
+          </div>
+
+          <div class="watchlist-grid" id="watchlistGrid">
+            <div class="empty-state">No stocks added to your watchlist yet. Add any NIFTY 50 constituent above.</div>
+          </div>
+        </section>
+
+        <!-- 6. BACKTESTING TAB -->
+        <section class="tab-panel" id="tab-backtest">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Strategy Backtesting Engine</h1>
+              <p class="view-subtitle">Rigorous chronological walk-forward simulation with realistic transaction friction</p>
+            </div>
+          </div>
+
+          <!-- CONFIGURATION FORM -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Backtest Parameters & Friction Controls</h3>
+              <span class="card-subtitle">Zero look-ahead bias: signals evaluated at Friday close, executed at Monday open</span>
+            </div>
+            <div class="backtest-form-grid">
+              <div class="form-group">
+                <label>Initial Capital (INR ₹)</label>
+                <input type="number" id="btCapital" value="1000000" step="50000">
+              </div>
+              <div class="form-group">
+                <label>Max Concurrent Positions</label>
+                <input type="number" id="btMaxPositions" value="5" min="1" max="20">
+              </div>
+              <div class="form-group">
+                <label>Position Size (% Equity)</label>
+                <input type="number" id="btPosSize" value="20" min="5" max="100">
+              </div>
+              <div class="form-group">
+                <label>Min Signal Score</label>
+                <input type="number" id="btMinScore" value="70" min="50" max="95">
+              </div>
+              <div class="form-group">
+                <label>Stop-Loss (% Entry)</label>
+                <input type="number" id="btStopLoss" value="5.0" step="0.5">
+              </div>
+              <div class="form-group">
+                <label>Profit Target (% Entry)</label>
+                <input type="number" id="btTarget" value="15.0" step="1.0">
+              </div>
+              <div class="form-group">
+                <label>Slippage Assumption (% Entry & Exit)</label>
+                <input type="number" id="btSlippage" value="0.10" step="0.05">
+              </div>
+              <div class="form-group">
+                <label>Brokerage & Taxes (STT/Turnover %)</label>
+                <input type="number" id="btFees" value="0.15" step="0.05">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn-primary btn-large" id="btnRunBacktest">
+                <span>▶ Run Simulation</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- BACKTEST RESULTS CONTAINER -->
+          <div id="backtestResultsArea" class="hidden">
+            <!-- KEY METRICS ROW -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-title">Strategy Cumulative Return</div>
+                <div class="stat-value" id="btTotalReturn">+0.00%</div>
+                <div class="stat-desc" id="btVsBenchmark">vs Benchmark: +0.00%</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-title">CAGR (Annualized)</div>
+                <div class="stat-value" id="btCAGR">0.00%</div>
+                <div class="stat-desc">Compounded Annual Growth</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-title">Max Drawdown</div>
+                <div class="stat-value bear-text" id="btMaxDD">0.00%</div>
+                <div class="stat-desc">Peak-to-trough capital dip</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-title">Win Rate</div>
+                <div class="stat-value bull-text" id="btWinRate">0.0%</div>
+                <div class="stat-desc" id="btTradesCount">0 Total Trades</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-title">Profit Factor</div>
+                <div class="stat-value info-text" id="btProfitFactor">0.00</div>
+                <div class="stat-desc">Gross Profits / Gross Losses</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-title">Sharpe Ratio</div>
+                <div class="stat-value" id="btSharpe">0.00</div>
+                <div class="stat-desc">Risk-adjusted return (6% Rf)</div>
+              </div>
+            </div>
+
+            <!-- EQUITY CURVE CHART -->
+            <div class="dashboard-card">
+              <div class="card-header space-between">
+                <div>
+                  <h3>Equity Growth vs NIFTY 50 Benchmark</h3>
+                  <span class="card-subtitle">Chronological portfolio curve reflecting actual filled orders and fees</span>
+                </div>
+                <div class="equity-legend">
+                  <span class="legend-item"><span class="color-dot" style="background:#10b981"></span> Bearabull Strategy</span>
+                  <span class="legend-item"><span class="color-dot" style="background:#64748b"></span> NIFTY 50 Benchmark</span>
+                </div>
+              </div>
+              <div id="equityCurveBox" class="equity-chart-box"></div>
+            </div>
+
+            <!-- TRADE LOG TABLE -->
+            <div class="dashboard-card">
+              <div class="card-header">
+                <h3>Executed Trades Journal</h3>
+                <span class="card-subtitle">Audited record of all simulated entries, exits, and P&L results</span>
+              </div>
+              <div class="table-container">
+                <table class="data-table" id="btTradesTable">
+                  <thead>
+                    <tr>
+                      <th>Symbol</th>
+                      <th>Entry Date</th>
+                      <th>Exit Date</th>
+                      <th class="num">Entry Price (₹)</th>
+                      <th class="num">Exit Price (₹)</th>
+                      <th class="num">Shares</th>
+                      <th class="num">P&L (₹)</th>
+                      <th class="num">Return %</th>
+                      <th>Exit Reason</th>
+                    </tr>
+                  </thead>
+                  <tbody id="btTradesTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 7. METHODOLOGY TAB -->
+        <section class="tab-panel" id="tab-methodology">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Strategy Methodology & Technical Framework</h1>
+              <p class="view-subtitle">Transparent, deterministic scoring architecture without unexplainable black-box models</p>
+            </div>
+          </div>
+
+          <div class="methodology-content">
+            <div class="methodology-card">
+              <h2>1. The 5-Pillar Explainable Scoring Model</h2>
+              <p>Bearabull evaluates all 50 constituent equities of the NIFTY 50 index at the conclusion of every trading session. The weekly signal engine synthesizes 5 orthogonal quantitative dimensions into a single directional score (0–100):</p>
+              
+              <div class="pillars-grid">
+                <div class="pillar-box">
+                  <div class="pillar-header">
+                    <span class="pillar-weight">35% Weight</span>
+                    <h3>Trend Regime</h3>
+                  </div>
+                  <p>Evaluates long-term, intermediate, and short-term moving average structure:</p>
+                  <ul>
+                    <li>Price vs 200-day Simple Moving Average (SMA 200)</li>
+                    <li>Golden alignment: Price > SMA 50 and SMA 20 > SMA 50</li>
+                    <li>Short-term momentum: 9-day EMA vs 21-day EMA</li>
+                    <li>Supertrend (10-period, 3.0 ATR multiplier) directional regime</li>
+                    <li>Average Directional Index (ADX 14) and +DI / -DI directional bias</li>
+                  </ul>
+                </div>
+
+                <div class="pillar-box">
+                  <div class="pillar-header">
+                    <span class="pillar-weight">25% Weight</span>
+                    <h3>Momentum Dynamics</h3>
+                  </div>
+                  <p>Measures price velocity and cycle inflection points:</p>
+                  <ul>
+                    <li>MACD (12, 26, 9) Line, Signal line crossover, and Histogram expansion</li>
+                    <li>RSI 14 Wilder's smoothing: 50–70 healthy bull momentum; &lt;35 oversold; &gt;75 overbought consolidation</li>
+                    <li>Stochastic Oscillator (%K 14, %D 3) crossovers</li>
+                  </ul>
+                </div>
+
+                <div class="pillar-box">
+                  <div class="pillar-header">
+                    <span class="pillar-weight">15% Weight</span>
+                    <h3>Volume Confirmation</h3>
+                  </div>
+                  <p>Validates institutional participation behind price moves:</p>
+                  <ul>
+                    <li>Relative Volume (RVOL): Today's volume vs 20-day average (>= 1.25x confirmation)</li>
+                    <li>14-day Rate of Change (ROC)</li>
+                    <li>On-Balance Volume (OBV) trend confirmation</li>
+                  </ul>
+                </div>
+
+                <div class="pillar-box">
+                  <div class="pillar-header">
+                    <span class="pillar-weight">15% Weight</span>
+                    <h3>Price Action & Breakouts</h3>
+                  </div>
+                  <p>Identifies structural chart inflection points:</p>
+                  <ul>
+                    <li>20-day Swing High and Swing Low breaks</li>
+                    <li>Volume-supported breakout and breakdown detection</li>
+                    <li>Unfilled opening gap-up and gap-down momentum</li>
+                  </ul>
+                </div>
+
+                <div class="pillar-box">
+                  <div class="pillar-header">
+                    <span class="pillar-weight">10% Weight</span>
+                    <h3>Volatility & Risk Filter</h3>
+                  </div>
+                  <p>Protects capital by sizing risk during unstable regimes:</p>
+                  <ul>
+                    <li>Average True Range (ATR 14) for dynamic stops</li>
+                    <li>Bollinger Bands (20, 2) expansion vs squeeze</li>
+                    <li>20-day annualized historical volatility ceiling (&gt;35% flags risk)</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="methodology-card">
+              <h2>2. Signal Decision Thresholds</h2>
+              <div class="thresholds-table">
+                <div class="threshold-row bull">
+                  <span class="t-badge bull">BUY</span>
+                  <div class="t-desc">
+                    <strong>Bullish Score >= 70</strong>, Bullish Score exceeds Bearish by at least 10 points, and acceptable data quality. Suggested entry is near support/close with 1.5x ATR stop loss.
+                  </div>
+                </div>
+                <div class="threshold-row bear">
+                  <span class="t-badge bear">SELL</span>
+                  <div class="t-desc">
+                    <strong>Bearish Score >= 70</strong>, Bearish Score exceeds Bullish by at least 10 points. Indicates strong technical breakdown or negative directional bias.
+                  </div>
+                </div>
+                <div class="threshold-row neutral">
+                  <span class="t-badge neutral">HOLD</span>
+                  <div class="t-desc">
+                    <strong>Consolidation Regime:</strong> Neither directional threshold is met. Reflects rangebound price action, mixed indicators, or pending breakout confirmation.
+                  </div>
+                </div>
+                <div class="threshold-row stale">
+                  <span class="t-badge stale">INSUFFICIENT DATA</span>
+                  <div class="t-desc">
+                    Fewer than 50 historical daily candles available, or missing crucial market fields. Signals are withheld to prevent deceptive outputs.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="methodology-card disclaimer-box">
+              <h3>⚠️ Regulatory Notice & Risk Disclaimer</h3>
+              <p>Bearabull is a quantitative technical-analysis and decision-support tool designed for informational and educational purposes. It is <strong>NOT</strong> an automated execution system and does not constitute registered investment advice. Market trading involves substantial risk of capital loss. Historical backtest results and technical indicators are hypothetical and never guarantee future performance.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 8. SETTINGS TAB -->
+        <section class="tab-panel" id="tab-settings">
+          <div class="view-header">
+            <div>
+              <h1 class="view-title">Settings & System Status</h1>
+              <p class="view-subtitle">Configuration parameters, upstream connectivity, and symbol registry</p>
+            </div>
+          </div>
+
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Market Data Provider & Synchronization</h3>
+            </div>
+            <div class="settings-form">
+              <div class="setting-row">
+                <div>
+                  <strong>Upstream Provider:</strong>
+                  <p class="muted">Primary data adapter for NSE prices</p>
+                </div>
+                <span class="badge info">Yahoo Finance (.NS Chart API)</span>
+              </div>
+              <div class="setting-row">
+                <div>
+                  <strong>Analysis Timezone:</strong>
+                  <p class="muted">Timezone for market candles and trading sessions</p>
+                </div>
+                <span class="badge">Asia/Kolkata (IST)</span>
+              </div>
+              <div class="setting-row">
+                <div>
+                  <strong>Strategy Engine Version:</strong>
+                  <p class="muted">Deterministic scoring rule set</p>
+                </div>
+                <span class="badge bull">v1.0.0</span>
+              </div>
+              <div class="setting-row">
+                <div>
+                  <strong>Manual Data Refresh:</strong>
+                  <p class="muted">Trigger parallel synchronization across all 50 NIFTY constituents</p>
+                </div>
+                <div class="btn-group">
+                  <button class="btn-primary" id="btnTriggerLiveSync">Sync Live Data</button>
+                  <button class="btn-secondary" id="btnTriggerDemoSync">Load Demo Baseline</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h3>Active NIFTY 50 Universe Registry (50 Constituents)</h3>
+              <span class="card-subtitle">Configurable constituent tickers with sector assignments</span>
+            </div>
+            <div class="table-container">
+              <table class="data-table" id="settingsUniverseTable">
+                <thead>
+                  <tr>
+                    <th>Ticker</th>
+                    <th>Yahoo Symbol</th>
+                    <th>Company Name</th>
+                    <th>Sector</th>
+                    <th>Exchange</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="settingsUniverseTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/js/charts.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

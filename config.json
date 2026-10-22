@@ -1,0 +1,15 @@
+{
+  "app_port": "8080",
+  "app_env": "development",
+  "database_path": "./bearabull.db",
+  "yahoo_finance_enabled": true,
+  "market_data_refresh_interval": "6h",
+  "max_concurrent_requests": 5,
+  "request_timeout": "15s",
+  "cache_ttl": "15m",
+  "analysis_timezone": "Asia/Kolkata",
+  "log_level": "info",
+  "admin_auth_enabled": false,
+  "admin_api_key": "bearabull-secret-key",
+  "strategy_version": "v1.0.0"
+}

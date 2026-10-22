@@ -1,0 +1,28 @@
+# Binaries
+/bearabull
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binaries and output
+*.test
+*.out
+
+# SQLite databases & WAL
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+test_*.db*
+
+# Environment files
+.env
+!.env.example
+
+# OS / Editor files
+.DS_Store
+.vscode/
+*.swp
+*.swo

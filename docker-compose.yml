@@ -1,0 +1,23 @@
+services:
+  bearabull:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bearabull-terminal
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - APP_PORT=8080
+      - APP_ENV=production
+      - DATABASE_PATH=/app/data/bearabull.db
+      - YAHOO_FINANCE_ENABLED=true
+      - ANALYSIS_TIMEZONE=Asia/Kolkata
+      - MAX_CONCURRENT_REQUESTS=5
+      - REQUEST_TIMEOUT=15s
+    volumes:
+      - bearabull_data:/app/data
+
+volumes:
+  bearabull_data:
+    driver: local

@@ -1,0 +1,239 @@
+openapi: 3.0.3
+info:
+  title: Bearabull REST API
+  description: Technical analysis, weekly signal scoring, and backtesting API for NIFTY 50 constituents.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+paths:
+  /health:
+    get:
+      summary: Health and service status
+      responses:
+        '200':
+          description: Service is healthy
+  /ready:
+    get:
+      summary: Readiness probe
+      responses:
+        '200':
+          description: Service is ready
+  /market/overview:
+    get:
+      summary: NIFTY 50 market breadth, index statistics, and top gainers/losers
+      responses:
+        '200':
+          description: Market overview summary
+  /stocks:
+    get:
+      summary: List all 50 constituent stocks
+      responses:
+        '200':
+          description: Constituent list
+  /stocks/{symbol}:
+    get:
+      summary: Detailed stock technical profile and latest signal
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            example: RELIANCE.NS
+      responses:
+        '200':
+          description: Stock details
+        '404':
+          description: Stock not found
+  /stocks/{symbol}/history:
+    get:
+      summary: Historical daily OHLCV candlestick series
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 500
+      responses:
+        '200':
+          description: Candlestick array
+  /stocks/{symbol}/indicators:
+    get:
+      summary: Calculated technical indicators snapshot
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Technical indicators
+  /stocks/{symbol}/signals:
+    get:
+      summary: Historical weekly signals for symbol
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Signal history array
+  /signals/weekly:
+    get:
+      summary: Latest weekly BUY / SELL / HOLD signals for universe
+      responses:
+        '200':
+          description: List of weekly signals
+  /screener:
+    get:
+      summary: Multi-factor stock screener and ranker
+      parameters:
+        - name: preset
+          in: query
+          schema:
+            type: string
+            enum: [top_bullish, top_bearish, strong_momentum, breakouts, pullbacks, high_volume, low_volatility]
+        - name: signal
+          in: query
+          schema:
+            type: string
+            enum: [BUY, SELL, HOLD, ALL]
+        - name: sector
+          in: query
+          schema:
+            type: string
+        - name: min_score
+          in: query
+          schema:
+            type: number
+        - name: risk_level
+          in: query
+          schema:
+            type: string
+            enum: [Low, Normal, High, ALL]
+        - name: sort_by
+          in: query
+          schema:
+            type: string
+            enum: [score, weekly_change, rsi, rvol, price, symbol]
+      responses:
+        '200':
+          description: Ranked screener items
+  /sectors:
+    get:
+      summary: List unique sectors and constituent counts
+      responses:
+        '200':
+          description: Sector list
+  /watchlist:
+    get:
+      summary: Get user's tracked watchlist stocks
+      responses:
+        '200':
+          description: Watchlist items
+    post:
+      summary: Add stock to watchlist
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [symbol]
+              properties:
+                symbol:
+                  type: string
+      responses:
+        '200':
+          description: Added
+  /watchlist/{symbol}:
+    delete:
+      summary: Remove stock from watchlist
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Removed
+  /backtests:
+    get:
+      summary: List past backtest simulation runs
+      responses:
+        '200':
+          description: Backtest runs
+    post:
+      summary: Execute new backtest simulation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                initial_capital:
+                  type: number
+                  default: 1000000
+                max_positions:
+                  type: integer
+                  default: 5
+                position_size_pct:
+                  type: number
+                  default: 20
+                slippage_pct:
+                  type: number
+                  default: 0.1
+                brokerage_fee_pct:
+                  type: number
+                  default: 0.15
+                stop_loss_pct:
+                  type: number
+                  default: 5.0
+                target_pct:
+                  type: number
+                  default: 15.0
+                min_score:
+                  type: number
+                  default: 70
+      responses:
+        '201':
+          description: Simulation results with trade log and equity curve
+  /backtests/{id}:
+    get:
+      summary: Retrieve specific backtest results
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Backtest run details
+  /sync/status:
+    get:
+      summary: Background synchronization state
+      responses:
+        '200':
+          description: Status object
+  /sync/trigger:
+    post:
+      summary: Trigger data synchronization
+      parameters:
+        - name: demo
+          in: query
+          schema:
+            type: boolean
+      responses:
+        '202':
+          description: Sync started in background
