@@ -58,29 +58,36 @@ To test or demo the platform with deterministic baseline data without hitting ex
 ./bearabull -demo -sync
 ```
 
-### 4. Running via Podman
+### 4. Running via Podman Pod Deployment
+Bearabull supports native **Podman Pod** deployment, enabling co-located container networking, port mapping on the pod infrastructure layer, and persistent volume management via Kubernetes/Podman pod manifests.
+
 ```bash
-# Build the container image with Podman
-make podman-build
+# 1. Build container image and deploy inside a Podman Pod
+make pod-deploy
 
-# Run the container (starts in background with persistent volume at http://localhost:8080)
-make podman-run
+# 2. View pod and container status
+make pod-ps
 
-# View live container logs
-make podman-logs
+# 3. Stream live logs from the pod
+make pod-logs
 
-# Stop and remove container
-make podman-stop
+# 4. Check API health status
+make pod-health
+
+# 5. Tear down pod deployment
+make pod-down
 ```
 
-Or run directly using the Podman CLI:
-```bash
-# Build
-podman build -t bearabull:latest .
-
-# Run with persistent SQLite data volume
-podman run -d --name bearabull-terminal -p 8080:8080 -v bearabull_data:/app/data:Z bearabull:latest
-```
+#### Native Podman Pod Lifecycle Targets:
+- `make podman-build`: Build container image `bearabull:latest` with Podman.
+- `make pod-deploy` (or `make deploy`): Declaratively deploy pod with persistent SQLite PVC via `podman play kube deploy/pod.yaml`.
+- `make pod-down` (or `make undeploy`): Cleanly stop and delete the pod deployment.
+- `make pod-create`: Create standalone Podman pod `bearabull-pod` with port mapping `8080:8080`.
+- `make pod-run`: Run application container inside the native Podman pod.
+- `make pod-start` / `make pod-stop` / `make pod-restart`: Manage pod state.
+- `make pod-rm`: Remove pod and its containers.
+- `make pod-ps`: View pod infrastructure and member container status.
+- `make pod-health`: Curl verification of `/api/v1/health`.
 
 ---
 

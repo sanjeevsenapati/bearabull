@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: bearabull-pod
+  labels:
+    app: bearabull
+spec:
+  restartPolicy: Always
+  volumes:
+    - name: bearabull-data
+      persistentVolumeClaim:
+        claimName: bearabull-data
+  containers:
+    - name: bearabull-app
+      image: localhost/bearabull:latest
+      imagePullPolicy: IfNotPresent
+      ports:
+        - name: http
+          containerPort: 8080
+          hostPort: 8080
+      env:
+        - name: APP_PORT
+          value: "8080"
+        - name: APP_ENV
+          value: "production"
+        - name: DATABASE_PATH
+          value: "/app/data/bearabull.db"
+        - name: YAHOO_FINANCE_ENABLED
+          value: "true"
+        - name: ANALYSIS_TIMEZONE
+          value: "Asia/Kolkata"
+        - name: TZ
+          value: "Asia/Kolkata"
+      volumeMounts:
+        - name: bearabull-data
+          mountPath: /app/data
+      resources:
+        limits:
+          memory: "1Gi"
+          cpu: "1000m"
+        requests:
+          memory: "256Mi"
+          cpu: "250m"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bearabull-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
